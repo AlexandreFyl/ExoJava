@@ -4,11 +4,17 @@ import file_handling.manager.ConsoleManager;
 import file_handling.manager.FileManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Scanner;
 
 public class FileService {
 
     private boolean done;
     private FileManager fileManager;
+    private String temp, temp1, temp2;
+    Scanner scanner = new Scanner(System.in);
 
     public FileService() {
         done = false;
@@ -55,6 +61,9 @@ public class FileService {
 
         if (action.equalsIgnoreCase(UserActions.GO_IN_FOLDER.getValue())) {
         	moveInto();
+        }
+        if (action.equalsIgnoreCase(UserActions.COPY_FILE.getValue())) {
+        	copyFile(null, null);
         }
 
         if (action.equalsIgnoreCase(UserActions.BACK_FOLDER.getValue())) {
@@ -225,4 +234,32 @@ public class FileService {
     public void setDone(boolean done) {
         this.done = done;
     }
+    
+	public boolean copyFile(Path source, Path destination) {
+
+		ConsoleManager.getInstance().printToConsole("Veuillez saisir le chemin d'accès du fichier :", true);
+		temp1 = this.scanner.nextLine();
+		this.isFile(temp1);
+
+		try {
+			Files.copy(source, destination);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public void isFile(String url) {
+		ConsoleManager.getInstance().consoleLineBreak();
+		if (new File(temp1).isFile()) {
+			System.out.println("Le chemin est bien valide veuillez maintenant coller votre fichier : ");
+
+		} else {
+			System.out.println("Chemin d'accès invalide");
+			System.out.println("Veuillez entrez le chemin d'accès valide (fichier) :");
+			temp1 = ConsoleManager.getInstance().readUserInput();
+		}
+
+	}
 }
